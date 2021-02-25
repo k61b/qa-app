@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import endpoint from '../../lib/endpoint.cofig'
-import IConnectDatabase from '../../interfaces/IConnectDatabase.interface'
+import IConnectDatabase from './IConnectDatabase.interface'
 
 class ConnectDB implements IConnectDatabase {
 
