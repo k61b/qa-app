@@ -4,12 +4,14 @@ import IConnectDatabase from '../../interfaces/IConnectDatabase.interface'
 
 class ConnectDB implements IConnectDatabase {
 
+    public uri = endpoint.MONGO_URI
+
     constructor() {
         this.connectDatabase()
     }
 
     public connectDatabase() {
-        mongoose.connect(endpoint.MONGO_URI, {
+        mongoose.connect(this.uri, {
             useNewUrlParser: true,
             useFindAndModify: false,
             useCreateIndex: true,
