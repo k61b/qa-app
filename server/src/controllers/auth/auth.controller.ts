@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import IControllerBase from 'src/interfaces/IControllerBase.interface'
 import IUser from './auth.interface'
 import User from '../../model/user.model'
@@ -16,21 +16,31 @@ class AuthController implements IControllerBase {
 
     public initRoutes() {
         this.router.post(`${this.path}/register`, this.createUser)
+        this.router.get(`${this.path}/error`, this.errorTest)
     }
 
-    createUser = async (req: Request, res: Response) => {
-        const user: IUser = req.body
-        this.users.push(user)
-        
-        const newUser:IUser[] = await User.create(this.users)
+    createUser = async (req: Request, res: Response, next: NextFunction) => {
 
-        res
-        .status(201)
-        .json({
-            success: true,
-            data: newUser
-        });
+        try {
+            const user: IUser = req.body
+            this.users.push(user)
 
+            const newUser: IUser[] = await User.create(this.users)
+
+            res
+                .status(201)
+                .json({
+                    success: true,
+                    data: newUser
+                })
+                
+        } catch (err) {
+            return next(err)
+        }
+    }
+
+    errorTest = (req: Request, res: Response, next: NextFunction) => {
+        throw new Error("Something went wrong.")
     }
 }
 
