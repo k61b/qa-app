@@ -1,16 +1,20 @@
 import mongoose from 'mongoose'
 import endpoint from '../../lib/endpoint.cofig'
-import IConnectDatabase from './IConnectDatabase.interface'
+import IHelperBase from '../../interfaces/IHelperBase.interface'
 
-class ConnectDB implements IConnectDatabase {
+class ConnectDB implements IHelperBase {
 
     public uri = endpoint.MONGO_URI
 
     constructor() {
-        this.connectDatabase()
+        this.initHelpers()
     }
 
-    public connectDatabase() {
+    public initHelpers() {
+        this.connectDB()
+    }
+
+    connectDB = () => {
         mongoose.connect(this.uri, {
             useNewUrlParser: true,
             useFindAndModify: false,
