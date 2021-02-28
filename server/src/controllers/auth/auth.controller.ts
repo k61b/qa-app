@@ -1,5 +1,6 @@
 import * as express from 'express'
 import { Request, Response, NextFunction } from 'express'
+import asyncHandler from 'express-async-handler'
 import IControllerBase from 'src/interfaces/IControllerBase.interface'
 import IUser from './auth.interface'
 import User from '../../model/user.model'
@@ -20,25 +21,20 @@ class AuthController implements IControllerBase {
         this.router.get(`${this.path}/error`, this.errorTest)
     }
 
-    createUser = async (req: Request, res: Response, next: NextFunction) => {
+    createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
-        try {
-            const user: IUser = req.body
-            this.users.push(user)
+        const user: IUser = req.body
+        this.users.push(user)
 
-            const newUser: IUser[] = await User.create(this.users)
+        const newUser: IUser[] = await User.create(this.users)
 
-            res
-                .status(201)
-                .json({
-                    success: true,
-                    data: newUser
-                })
-                
-        } catch (err) {
-            return next(err)
-        }
-    }
+        res
+            .status(201)
+            .json({
+                success: true,
+                data: newUser
+            })
+    })
 
     errorTest = (req: Request, res: Response, next: NextFunction) => {
         next(new HttpException(404, 'Error Test'))
