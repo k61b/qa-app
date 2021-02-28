@@ -2,7 +2,7 @@ import * as bodyParser from 'body-parser'
 
 import App from './app'
 import loggerMiddleware from './middleware/logger'
-// import customErrorHandler from './middleware/errors'
+import customErrorHandler from './middleware/errors'
 import endpoint from './lib/endpoint.cofig'
 import ConnectDB from './helpers/database/db'
 
@@ -17,14 +17,14 @@ const app = new App({
         new QuestionController(),
         new AuthController()
     ],
+    helperS: [
+        ConnectDB
+    ],
     middleWares: [
         bodyParser.json(),
         bodyParser.urlencoded({ extended: true }),
         loggerMiddleware,
-        // customErrorHandler
-    ],
-    helperS: [
-        ConnectDB
+        customErrorHandler
     ]
 })
 

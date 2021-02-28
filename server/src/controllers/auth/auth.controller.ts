@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import IControllerBase from 'src/interfaces/IControllerBase.interface'
 import IUser from './auth.interface'
 import User from '../../model/user.model'
+import HttpException from '../../helpers/errors/HttpException'
 
 class AuthController implements IControllerBase {
     public path = '/auth'
@@ -40,7 +41,7 @@ class AuthController implements IControllerBase {
     }
 
     errorTest = (req: Request, res: Response, next: NextFunction) => {
-        throw new Error("Something went wrong.")
+        next(new HttpException(404, 'Error Test'))
     }
 }
 
