@@ -9,15 +9,9 @@ import User from '../../model/user.model'
 import UserWithThatEmailAlreadyExistsException from '../../helpers/errors/UserWithThatEmailAlreadyExistsException'
 import WrongCredentialsException from '../../helpers/errors/WrongCredentialsException'
 import endpoint from '../../lib/endpoint.cofig'
+import ITokenData from '../../interfaces/ITokenData.interface'
+import IDataStoredInToken from '../../interfaces/IDataStoredInToken.interface'
 
-interface TokenData {
-    token: string;
-    expiresIn: number;
-}
-
-interface DataStoredInToken {
-    _id: string;
-}
 
 class AuthController implements IControllerBase {
     public path = '/auth'
@@ -31,6 +25,7 @@ class AuthController implements IControllerBase {
     public initRoutes() {
         this.router.post(`${this.path}/register`, this.registration)
         this.router.post(`${this.path}/login`, this.loggingIn)
+        this.router.post(`${this.path}/logout`, this.loggingOut)
     }
 
     registration = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -71,10 +66,15 @@ class AuthController implements IControllerBase {
         }
     })
 
-    createToken(user: IUser): TokenData {
+    loggingOut = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        res.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
+        res.send(200);
+    })
+
+    createToken(user: IUser): ITokenData {
         const expiresIn = 60 * 60
         const secret = endpoint.JWT_SECRET
-        const dataStoredInToken: DataStoredInToken = {
+        const dataStoredInToken: IDataStoredInToken = {
             _id: user._id
         }
         return {
@@ -83,7 +83,7 @@ class AuthController implements IControllerBase {
         }
     }
 
-    createCookie(tokenData: TokenData) {
+    createCookie(tokenData: ITokenData) {
         return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`
     }
 

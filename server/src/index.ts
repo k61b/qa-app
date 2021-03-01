@@ -1,8 +1,9 @@
 import * as bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 
 import App from './app'
-import loggerMiddleware from './middleware/logger'
-import customErrorHandler from './middleware/errors'
+import loggerMiddleware from './middleware/logger.middleware'
+import customErrorHandler from './middleware/error.middleware'
 import endpoint from './lib/endpoint.cofig'
 import ConnectDB from './helpers/database/db'
 
@@ -23,6 +24,7 @@ const app = new App({
     middleWares: [
         bodyParser.json(),
         bodyParser.urlencoded({ extended: true }),
+        cookieParser(),
         loggerMiddleware,
         customErrorHandler
     ]
