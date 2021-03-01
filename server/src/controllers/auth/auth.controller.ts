@@ -1,44 +1,61 @@
 import * as express from 'express'
 import { Request, Response, NextFunction } from 'express'
+import * as bcrypt from 'bcrypt'
 import asyncHandler from 'express-async-handler'
 import IControllerBase from 'src/interfaces/IControllerBase.interface'
 import IUser from './auth.interface'
 import User from '../../model/user.model'
-import HttpException from '../../helpers/errors/HttpException'
+import UserWithThatEmailAlreadyExistsException from '../../helpers/errors/UserWithThatEmailAlreadyExistsException'
+import WrongCredentialsException from '../../helpers/errors/WrongCredentialsException'
 
 class AuthController implements IControllerBase {
     public path = '/auth'
     public router = express.Router()
-
-    private users: IUser[] = []
+    private user = User
 
     constructor() {
         this.initRoutes()
     }
 
     public initRoutes() {
-        this.router.post(`${this.path}/register`, this.createUser)
-        this.router.get(`${this.path}/error`, this.errorTest)
+        this.router.post(`${this.path}/register`, this.registration)
+        this.router.post(`${this.path}/login`, this.loggingIn)
     }
 
-    createUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    registration = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
-        const user: IUser = req.body
-        this.users.push(user)
+        const userData: IUser = req.body
 
-        const newUser: IUser[] = await User.create(this.users)
-
-        res
-            .status(201)
-            .json({
-                success: true,
-                data: newUser
+        if (await this.user.findOne({ email: userData.email })) {
+            next(new UserWithThatEmailAlreadyExistsException(userData.email))
+        } else {
+            const hashedPassword = await bcrypt.hash(userData.password, 10)
+            const user: any = await this.user.create({
+                ...userData,
+                password: hashedPassword
             })
+            user.password = undefined
+            res.send(user)
+        }
     })
 
-    errorTest = (req: Request, res: Response, next: NextFunction) => {
-        next(new HttpException(404, 'Error Test'))
-    }
+    loggingIn = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const logInData: IUser = req.body
+        const user: any = await this.user.findOne({ email: logInData.email }).select("+password")
+        if (user) {
+            const isPasswordMatching = await bcrypt.compare(logInData.password, user.password)
+            
+            if (isPasswordMatching) {
+                user.password = undefined
+                res.send(user)
+            } else {
+                next(new WrongCredentialsException())
+            }
+        } else {
+            next(new WrongCredentialsException())
+        }
+    })
+
 }
 
 export default AuthController
