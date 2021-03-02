@@ -10,6 +10,7 @@ import ConnectDB from './helpers/database/db'
 import HomeController from './controllers/home/home.controller'
 import QuestionController from './controllers/question/question.controller'
 import AuthController from './controllers/auth/auth.controller'
+// import authMiddleware from './middleware/auth.middleware'
 
 const app = new App({
     port: endpoint.PORT,
@@ -25,6 +26,7 @@ const app = new App({
         bodyParser.json(),
         bodyParser.urlencoded({ extended: true }),
         cookieParser(),
+        // authMiddleware,
         loggerMiddleware,
         customErrorHandler
     ]
