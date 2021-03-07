@@ -11,7 +11,7 @@ import WrongCredentialsException from '../../helpers/errors/WrongCredentialsExce
 import endpoint from '../../lib/endpoint.cofig'
 import ITokenData from '../../interfaces/ITokenData.interface'
 import IDataStoredInToken from '../../interfaces/IDataStoredInToken.interface'
-
+import authMiddleware from '../../middleware/auth.middleware'
 
 class AuthController implements IControllerBase {
     public path = '/auth'
@@ -26,7 +26,12 @@ class AuthController implements IControllerBase {
         this.router.post(`${this.path}/register`, this.registration)
         this.router.post(`${this.path}/login`, this.loggingIn)
         this.router.post(`${this.path}/logout`, this.loggingOut)
+        this.router.get(`${this.path}/errortest`, authMiddleware, this.errorTest)
     }
+
+    errorTest = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        res.send('Hello World!')
+    })
 
     registration = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
