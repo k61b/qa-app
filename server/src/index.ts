@@ -9,7 +9,7 @@ import ConnectDB from './helpers/database/db'
 
 import HomeController from './controllers/home/home.controller'
 import QuestionController from './controllers/question/question.controller'
-import AuthController from './controllers/auth/auth.controller'
+import AuthController from './controllers/user/user.controller'
 // import authMiddleware from './middleware/auth.middleware'
 
 const app = new App({

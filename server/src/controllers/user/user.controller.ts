@@ -4,8 +4,8 @@ import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
 import IControllerBase from 'src/interfaces/IControllerBase.interface'
-import IUser from './auth.interface'
-import User from '../../model/user.model'
+import IUser from './user.interface'
+import userModel from './user.model'
 import UserWithThatEmailAlreadyExistsException from '../../helpers/errors/UserWithThatEmailAlreadyExistsException'
 import WrongCredentialsException from '../../helpers/errors/WrongCredentialsException'
 import endpoint from '../../lib/endpoint.cofig'
@@ -16,7 +16,7 @@ import IDataStoredInToken from '../../interfaces/IDataStoredInToken.interface'
 class AuthController implements IControllerBase {
     public path = '/auth'
     public router = express.Router()
-    private user = User
+    private user = userModel
 
     constructor() {
         this.initRoutes()

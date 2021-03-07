@@ -1,4 +1,5 @@
-interface IUser {
+interface User {
+    _id: string
 	name: string
 	email: string
 	role: string
@@ -12,4 +13,4 @@ interface IUser {
 	blocked: boolean
 }
 
-export = IUser
+export default User

@@ -1,9 +1,7 @@
 import mongoose from 'mongoose'
-import IUser from './IUser.interface'
+import User from './user.interface'
 
-interface IUserModel extends IUser, mongoose.Document { }
-
-export const UserSchema = new mongoose.Schema({
+export const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please provide a name"]
@@ -54,6 +52,6 @@ export const UserSchema = new mongoose.Schema({
     }
 })
 
-const User = mongoose.model<IUserModel>('User', UserSchema)
+const userModel = mongoose.model<User & mongoose.Document>('User', userSchema)
 
-export default User
+export default userModel
