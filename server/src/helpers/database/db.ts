@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import endpoint from '../../lib/endpoint.cofig'
+import endpoint from '../../lib/endpoint.config'
 import IHelperBase from '../../interfaces/IHelperBase.interface'
 
 class ConnectDB implements IHelperBase {

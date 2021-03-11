@@ -5,7 +5,7 @@ import WrongAuthenticationTokenException from '../helpers/errors/WrongAuthentica
 import IDataStoredInToken from '../interfaces/IDataStoredInToken.interface'
 import IRequestWithUser from '../interfaces/IRequestWithUser.interface'
 import userModel from '../controllers/user/user.model'
-import endpoint from '../lib/endpoint.cofig'
+import endpoint from '../lib/endpoint.config'
 
 const authMiddleware = async (req: IRequestWithUser, res: Response, next: NextFunction) => {
     const cookies = req.cookies
