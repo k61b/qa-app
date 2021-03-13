@@ -26,11 +26,12 @@ class AuthController implements IControllerBase {
         this.router.post(`${this.path}/register`, this.registration)
         this.router.post(`${this.path}/login`, this.loggingIn)
         this.router.post(`${this.path}/logout`, this.loggingOut)
+        this.router.get(`${this.path}/profile`, authMiddleware, this.getUser)
         this.router.get(`${this.path}/errortest`, authMiddleware, this.errorTest)
     }
 
     errorTest = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        res.send('Hello World!')
+        res.send(req.body)
     })
 
     registration = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -74,6 +75,15 @@ class AuthController implements IControllerBase {
     loggingOut = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
         res.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
         res.send(200);
+    })
+
+    getUser = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+        const cookies = req.cookies
+        const dataResponse = jwt.verify(cookies.Authorization, endpoint.JWT_SECRET) as IDataStoredInToken
+        const id = dataResponse._id
+        const user = await this.user.findById(id)
+        res.send(user)
+        
     })
 
     createToken(user: IUser): ITokenData {
