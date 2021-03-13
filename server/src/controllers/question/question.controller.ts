@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { Request, Response } from 'express'
-import IControllerBase from 'src/interfaces/IControllerBase.interface'
+import IControllerBase from '../../interfaces/IControllerBase.interface'
 
 class QuestionController implements IControllerBase {
     public path = '/questions'
