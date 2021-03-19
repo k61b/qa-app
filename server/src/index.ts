@@ -10,7 +10,7 @@ import ConnectDB from './helpers/database/db'
 
 import HomeController from './controllers/home/home.controller'
 import QuestionController from './controllers/question/question.controller'
-import AuthController from './controllers/user/user.controller'
+import UserController from './controllers/user/user.controller'
 
 validateEnv()
 
@@ -19,7 +19,7 @@ const app = new App({
     controllers: [
         new HomeController(),
         new QuestionController(),
-        new AuthController()
+        new UserController()
     ],
     helperS: [
         ConnectDB

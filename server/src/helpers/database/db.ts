@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 import endpoint from '../../lib/endpoint.config'
-import IHelperBase from '../../interfaces/IHelperBase.interface'
+import Helper from '../../interfaces/helper.interface'
 
-class ConnectDB implements IHelperBase {
+class ConnectDB implements Helper {
 
     public uri = endpoint.MONGO_URI
 

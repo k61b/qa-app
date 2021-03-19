@@ -2,26 +2,25 @@ import { NextFunction, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import AuthenticationTokenMissingException from '../helpers/errors/AuthenticationTokenMissingException'
 import WrongAuthenticationTokenException from '../helpers/errors/WrongAuthenticationTokenException'
-import IDataStoredInToken from '../interfaces/IDataStoredInToken.interface'
-import IRequestWithUser from '../interfaces/IRequestWithUser.interface'
+import DataStoredInToken from '../interfaces/dataStoredInToken.interface'
+import RequestWithUser from '../interfaces/requestWithUser.interface'
 import userModel from '../controllers/user/user.model'
-import endpoint from '../lib/endpoint.config'
 
-const authMiddleware = async (req: IRequestWithUser, res: Response, next: NextFunction) => {
-    const cookies = req.cookies
+async function authMiddleware(request: RequestWithUser, response: Response, next: NextFunction) {
+    const cookies = request.cookies
     if (cookies && cookies.Authorization) {
-        const secret = endpoint.JWT_SECRET
+        const secret = process.env.JWT_SECRET
         try {
-            const verificationResponse = jwt.verify(cookies.Authorization, secret) as IDataStoredInToken
+            const verificationResponse = jwt.verify(cookies.Authorization, secret) as DataStoredInToken
             const id = verificationResponse._id
             const user = await userModel.findById(id)
             if (user) {
-                req.user = user
+                request.user = user
                 next()
             } else {
                 next(new WrongAuthenticationTokenException())
             }
-        } catch (err) {
+        } catch (error) {
             next(new WrongAuthenticationTokenException())
         }
     } else {
